@@ -21,12 +21,21 @@ class Game {
    * initial state.
    */
   constructor(initialState) {
+    this.initialState = initialState || [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
     this.board = initialState || [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+
+    this.board = this.initialState.map((row) => [...row]);
 
     this.score = 0;
     this.status = 'idle';
@@ -56,6 +65,10 @@ class Game {
   }
 
   moveRight() {
+    if (this.status !== 'playing') {
+      return;
+    }
+
     let change = false;
 
     for (let i = 0; i < this.board.length; i++) {
@@ -180,7 +193,7 @@ class Game {
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (this.board[r][c] === 2048) {
-          this.status = 'won';
+          this.status = 'win';
 
           return;
         }
@@ -194,9 +207,10 @@ class Game {
 
     for (let i = 0; i < compact.length - 1; i++) {
       if (compact[i] === compact[i + 1]) {
-        compact[i] = compact[i] * 2;
+        compact[i] *= 2;
         gained += compact[i];
         compact[i + 1] = 0;
+        i++;
       }
     }
 
@@ -241,23 +255,22 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-
     this.score = 0;
     this.status = 'playing';
     this.hasStarted = true;
+
+    this.addRandomTile();
+    this.addRandomTile();
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    this.start();
+    this.board = this.initialState.map((row) => [...row]);
+    this.score = 0;
+    this.status = 'idle';
+    this.hasStarted = false;
   }
 
   afterMove(didChange) {
@@ -267,8 +280,8 @@ class Game {
     this.addRandomTile();
     this.checkWin();
 
-    if (this.status !== 'won' && !this.isMovePossible()) {
-      this.status = 'lost';
+    if (this.status !== 'win' && !this.isMovePossible()) {
+      this.status = 'lose';
     }
   }
 }
