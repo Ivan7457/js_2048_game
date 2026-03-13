@@ -5,24 +5,42 @@ const Game = require('../modules/Game.class');
 const game = new Game();
 
 // Write your code here
+const button = document.querySelector('.button');
+const score = document.querySelector('.game-score');
+const messageLose = document.querySelector('.message-lose');
+const messageWin = document.querySelector('.message-win');
+const messageStart = document.querySelector('.message-start');
 
 function render(state) {
   const cells = document.querySelectorAll('.field-cell');
 
-  cells.forEach((cell) => {
-    const [r, c] = cell.dataset.pos.split('-').map(Number);
+  cells.forEach((cell, index) => {
+    const r = Math.floor(index / 4);
+    const c = index % 4;
+
     const value = state[r][c];
 
     cell.textContent = value === 0 ? '' : value;
+
     cell.className = 'field-cell';
 
     if (value !== 0) {
       cell.classList.add(`field-cell--${value}`);
     }
-  });
-}
 
-const button = document.getElementsByClassName('button');
+    if (game.getStatus() === 'win') {
+      game.checkWin();
+      messageWin.classList.remove('hidden');
+      messageStart.classList.add('hidden');
+    }
+
+    if (game.getStatus() === 'lose') {
+      messageLose.classList.remove('hidden');
+      messageStart.classList.add('hidden');
+    }
+  });
+  score.textContent = game.getScore();
+}
 
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
@@ -39,18 +57,26 @@ document.addEventListener('keydown', (e) => {
       game.moveDown();
       break;
   }
-  render();
+  render(game.getState());
 });
 
 button.addEventListener('click', (e) => {
   if (!game.hasStarted) {
     game.start();
+    render(game.getState());
 
     button.classList.remove('start');
     button.classList.add('restart');
     button.textContent = 'Restart';
   } else {
     game.restart();
+    button.classList.add('start');
+    button.classList.remove('restart');
+    button.textContent = 'Start';
+
+    messageWin.classList.add('hidden');
+    messageLose.classList.add('hidden');
+    messageStart.classList.remove('hidden');
     render(game.getState());
   }
 });

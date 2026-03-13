@@ -96,8 +96,7 @@ class Game {
     let change = false;
 
     const transposed = this.board[0].map((_, colIndex) =>
-      this.board.map((row) => row[colIndex]),
-    );
+      this.board.map((row) => row[colIndex]),);
 
     for (let i = 0; i < transposed.length; i++) {
       const { newLine, gained } = this.processLineLeft(transposed[i]);
