@@ -68,6 +68,8 @@ button.addEventListener('click', (e) => {
     button.classList.remove('start');
     button.classList.add('restart');
     button.textContent = 'Restart';
+
+    messageStart.classList.add('hidden');
   } else {
     game.restart();
     button.classList.add('start');
