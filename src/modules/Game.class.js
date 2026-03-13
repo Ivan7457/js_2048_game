@@ -95,10 +95,18 @@ class Game {
 
     let change = false;
 
-    const transposed = this.board[0].map((_, colIndex) =>
-      this.board.map((row) => row[colIndex]),);
+    const transposed = [];
 
-    for (let i = 0; i < transposed.length; i++) {
+    for (let c = 0; c < 4; c++) {
+      const col = [];
+
+      for (let r = 0; r < 4; r++) {
+        col.push(this.board[r][c]);
+      }
+      transposed.push(col);
+    }
+
+    for (let i = 0; i < 4; i++) {
       const { newLine, gained } = this.processLineLeft(transposed[i]);
 
       if (JSON.stringify(newLine) !== JSON.stringify(transposed[i])) {
@@ -108,9 +116,12 @@ class Game {
       }
     }
 
-    this.board = transposed[0].map((_, colIndex) =>
-      transposed.map((row) => row[colIndex]),
-    );
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        this.board[r][c] = transposed[c][r];
+      }
+    }
+
     this.afterMove(change);
   }
 
@@ -121,9 +132,16 @@ class Game {
 
     let change = false;
 
-    const transposed = this.board[0].map((_, colIndex) =>
-      this.board.map((row) => row[colIndex]),
-    );
+    const transposed = [];
+
+    for (let c = 0; c < 4; c++) {
+      const col = [];
+
+      for (let r = 0; r < 4; r++) {
+        col.push(this.board[r][c]);
+      }
+      transposed.push(col);
+    }
 
     for (let i = 0; i < transposed.length; i++) {
       const reversed = [...transposed[i]].reverse();
@@ -137,9 +155,11 @@ class Game {
       }
     }
 
-    this.board = transposed[0].map((_, colIndex) =>
-      transposed.map((row) => row[colIndex]),
-    );
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        this.board[r][c] = transposed[c][r];
+      }
+    }
 
     this.afterMove(change);
   }
